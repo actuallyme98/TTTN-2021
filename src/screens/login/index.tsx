@@ -1,111 +1,69 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import { CometChatAvatar } from '../../components';
+import React, { useCallback, useEffect, useState } from 'react';
 import { COMETCHAT_CONSTANTS } from '../../../CONST';
-import style from './styles';
+import styles from './styles';
 import * as actions from '../../redux/actions/app-action';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface IProps {
-  dispatch: any;
-  isLoggedIn: boolean;
   navigation: any;
-  loading: boolean;
-  error: any;
 }
 
-interface IState {
-  uid: string;
-}
+const LoginPage = (props: IProps) => {
+  const { navigation } = props;
+  const [phone, setPhone] = useState('');
+  const isLoggedIn = useSelector((store: any) => store.reducer.isLoggedIn);
+  const loading = useSelector((store: any) => store.reducer.loading);
+  const error = useSelector((store: any) => store.reducer.error);
 
-class LoginPage extends React.PureComponent<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {
-      uid: '',
-    };
-  }
+  const dispatch = useDispatch();
 
-  login = (uid?: string) => {
-    if (!uid) {
-      uid = this.state.uid;
+  const login = useCallback(() => {
+    dispatch(actions.auth(phone, COMETCHAT_CONSTANTS.AUTH_KEY));
+  }, [phone]);
+
+  const register = useCallback(() => {
+    navigation.navigate('Register');
+  }, []);
+
+  const onChangePhone = useCallback((text: string) => {
+    setPhone(text);
+  }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation.navigate('HomePage');
     }
-    this.props.dispatch(actions.auth(uid, COMETCHAT_CONSTANTS.AUTH_KEY));
-  };
+  }, [isLoggedIn]);
 
-  componentDidUpdate() {
-    if (this.props.isLoggedIn) {
-      this.props.navigation.navigate('HomePage');
-    }
-  }
-
-  render() {
-    let loader = null;
-
-    if (this.props.loading) {
-      loader = (
-        <View style={style.loaderContainer}>
-          <ActivityIndicator size="large" color="white" />
-        </View>
-      );
-    }
-
-    let errorMessage = null;
-    if (this.props.error) {
-      errorMessage = <Text style={style.errorStyle}>{this.props.error.message}</Text>;
-    }
-
+  if (loading) {
     return (
-      <SafeAreaView>
-        {loader}
-        <View style={style.wrapperStyle}>
-          {errorMessage}
-          <Text style={style.titleStyle}>ACTUALLY ME Chat</Text>
-          <Text style={style.subtitleStyle}>Quick login</Text>
-          <View style={style.userContainerStyle}>
-            <TouchableOpacity
-              style={style.userWrapperStyle}
-              onPress={() => this.login('superhero1')}
-            >
-              <View style={style.thumbnailWrapperStyle}>
-                <CometChatAvatar
-                  image={{
-                    uri: 'https://data-us.cometchat.io/assets/images/avatars/ironman.png',
-                  }}
-                />
-              </View>
-              <Text style={style.btnText}>superhero1</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={style.uidWrapperStyle}>
-            <View style={style.inputWrapperStyle}>
-              <TextInput
-                style={style.textInput}
-                // ref={this.myRef}
-                onChangeText={(value) => {
-                  this.setState({ uid: value });
-                }}
-                placeholder="Phone number"
-              />
-            </View>
-            <TouchableOpacity style={style.loginBtn} onPress={() => this.login()}>
-              <Text style={style.btnText}>Login</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </SafeAreaView>
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="white" />
+      </View>
     );
   }
-}
 
-const mapStateToProps = ({ reducer }: any) => {
-  return {
-    loading: reducer.loading,
-    error: reducer.error,
-    isLoggedIn: reducer.isLoggedIn,
-  };
+  return (
+    <View style={styles.container}>
+      <Text style={styles.logo}>React Native</Text>
+      <View style={styles.inputView}>
+        <TextInput
+          style={styles.inputText}
+          placeholder="Phone number"
+          placeholderTextColor="#003f5c"
+          onChangeText={onChangePhone}
+        />
+      </View>
+      {error && <Text style={styles.errorStyle}>{error.name || error.message || error}</Text>}
+      <TouchableOpacity style={styles.loginBtn} onPress={login}>
+        <Text style={styles.loginText}>LOGIN</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={register}>
+        <Text style={styles.loginText}>Register</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
-export default connect(mapStateToProps)(LoginPage);
+export default LoginPage;

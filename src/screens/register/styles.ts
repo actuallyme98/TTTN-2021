@@ -1,38 +1,20 @@
-import { StyleSheet, Dimensions } from 'react-native';
+import { StyleSheet } from 'react-native';
 
-const dHeight = Dimensions.get('window').height;
-const dWidth = Dimensions.get('window').width;
+import { Dimensions } from 'react-native';
 
-export const heightRatio = dHeight / 667;
-export const widthRatio = dWidth / 375;
+const dheight = Dimensions.get('window').height;
+const dwidth = Dimensions.get('window').width;
+
+export const heightRatio = dheight / 667;
+export const widthRatio = dwidth / 375;
 export const calc = () => {
-  return dHeight - 100 * heightRatio;
+  return dheight - 100 * heightRatio;
 };
 export const calcWidth = (width: number) => {
-  return dWidth - width * widthRatio;
+  return dwidth - width * widthRatio;
 };
 
 export default StyleSheet.create({
-  wrapperStyle: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  errorStyle: {
-    fontSize: 12 * heightRatio,
-    color: 'red',
-    width: '100%',
-    textAlign: 'center',
-  },
-  loaderContainer: {
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
-    position: 'absolute',
-    zIndex: 999,
-    top: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   container: {
     flex: 1,
     backgroundColor: '#003f5c',
@@ -74,5 +56,11 @@ export default StyleSheet.create({
   },
   loginText: {
     color: 'white',
+  },
+  errorStyle: {
+    fontSize: 12 * heightRatio,
+    color: 'red',
+    width: '100%',
+    textAlign: 'center',
   },
 });

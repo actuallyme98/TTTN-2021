@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import LoginPage from './screens/login';
 import HomePage from './screens/homepage';
+import RegisterPage from './screens/register';
 
 interface Props {
   isLoggedIn: boolean;
@@ -20,6 +21,7 @@ const StackNavigator = (props: Props) => {
       >
         <Stack.Screen name="LoginPage" component={LoginPage} />
         <Stack.Screen name="HomePage" component={HomePage} />
+        <Stack.Screen name="Register" component={RegisterPage} />
       </Stack.Navigator>
     </NavigationContainer>
   );
