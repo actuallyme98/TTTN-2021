@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unused-state */
+/* eslint-disable no-bitwise */
 /* eslint-disable react/no-did-update-set-state */
 import React from 'react';
 import {
